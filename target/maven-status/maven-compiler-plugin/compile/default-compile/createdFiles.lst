@@ -1,6 +1,10 @@
-controlladores\mascotas.class
-controlladores\citas.class
 controlladores\login.class
+db\Conexion.class
 controlladores\logout.class
 controlladores\cuenta.class
 controlladores\users.class
+modelosDAO\usuarioDAO.class
+controlladores\mascotas.class
+controlladores\citas.class
+interfaces\i_usuario.class
+modelos\cls_usuario.class
