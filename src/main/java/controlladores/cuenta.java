@@ -4,6 +4,9 @@
  */
 package controlladores;
 
+import modelos.cls_usuario;
+import modelosDAO.usuarioDAO;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -82,7 +85,66 @@ public class cuenta extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        String sesionpassword = (String) session.getAttribute("password");
+        String vista = "";
+        String fullname = request.getParameter("fullname");
+        String username = (String) session.getAttribute("username");
+        System.out.println("username: " + username);
+        String tel = request.getParameter("tel");
+        int id = (int) session.getAttribute("id");
+
+        cls_usuario usuario = new cls_usuario();
+        usuario.setId(id);
+        usuario.setFullname(fullname);
+        usuario.setUsername(username);
+        usuario.setTel(tel);
+
+        usuarioDAO usuarioDAO = new usuarioDAO();
+
+        if (request.getParameter("newpassword") != "") {
+            if(request.getParameter("password") == "") {
+                vista = "vistas/cuenta/index.jsp";
+                request.setAttribute("error", "Para cambiar la contraseña, debe ingresar su contraseña actual");
+                request.getRequestDispatcher(vista).forward(request, response);
+            }else {
+                if (!request.getParameter("password").equals(sesionpassword)) {
+                    vista = "vistas/cuenta/index.jsp";
+                    request.setAttribute("error", "Ingrese su contraseña actual para poder cambiar la contraseña");
+                    request.getRequestDispatcher(vista).forward(request, response);
+                } else if (request.getParameter("password").equals(sesionpassword)){
+                    String newpassword = request.getParameter("newpassword");
+                    usuario.setPassword(newpassword);
+                    Boolean success = usuarioDAO.actualizar(usuario);
+                    if (success) {
+                        vista = "vistas/cuenta/index.jsp";
+                        request.setAttribute("success", "Se ha actualizado la contraseña");
+                        request.getRequestDispatcher(vista).forward(request, response);
+                    } else {
+                        vista = "vistas/cuenta/index.jsp";
+                        request.setAttribute("error", "No se han podido actualizar los datos");
+                        request.getRequestDispatcher(vista).forward(request, response);
+                    }
+                }
+            }
+        }else {
+            //update
+            usuario.setPassword(sesionpassword);
+            Boolean success = usuarioDAO.actualizar(usuario);
+            if (success) {
+                session.setAttribute("fullname", usuario.getFullname());
+                session.setAttribute("username", usuario.getUsername());
+                session.setAttribute("password", usuario.getPassword());
+                session.setAttribute("tel", usuario.getTel());
+                vista = "vistas/cuenta/index.jsp";
+                request.setAttribute("success", "Se han actualizado los datos");
+                request.getRequestDispatcher(vista).forward(request, response);
+            } else {
+                vista = "vistas/cuenta/index.jsp";
+                request.setAttribute("error", "No se han podido actualizar los datos");
+                request.getRequestDispatcher(vista).forward(request, response);
+            }
+        }
     }
 
     /**

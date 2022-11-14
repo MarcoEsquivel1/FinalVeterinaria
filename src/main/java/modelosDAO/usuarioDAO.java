@@ -23,7 +23,21 @@ public class usuarioDAO implements i_usuario {
 
     @Override
     public boolean actualizar(cls_usuario usuario) {
-        return false;
+        String sql = "update usuarios set fullname=?, username=?, password=?, tel=? where id=?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, usuario.getFullname());
+            ps.setString(2, usuario.getUsername());
+            ps.setString(3, usuario.getPassword());
+            ps.setString(4, usuario.getTel());
+            ps.setInt(5, usuario.getId());
+            ps.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error al actualizar usuario: " + e);
+            return false;
+        }
     }
 
     @Override
