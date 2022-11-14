@@ -4,8 +4,12 @@
  */
 package controlladores;
 
+import modelos.cls_usuario;
+import modelosDAO.usuarioDAO;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -64,6 +68,9 @@ public class users extends HttpServlet {
             vista = "/";
         } else if ((int)session.getAttribute("idpermiso") == 1) {
             //redirect
+            usuarioDAO usuarioDAO = new usuarioDAO();
+            List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
+            session.setAttribute("usuarios", usuarios);
             vista= "vistas/users/index.jsp";
             request.getRequestDispatcher(vista).forward(request, response);
         } else if ((int)session.getAttribute("idpermiso") == 2 || (int)session.getAttribute("idpermiso") == 3) {
@@ -84,7 +91,43 @@ public class users extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        String vista = "";
+        String password = request.getParameter("password");
+        String passwordconf = request.getParameter("passwordconf");
+        System.out.println(password);
+        System.out.println(passwordconf);
+        if(!password.equals(passwordconf)) {
+            //error
+            vista = "vistas/users/index.jsp";
+            request.setAttribute("error", "Las contraseñas no coinciden");
+            request.getRequestDispatcher(vista).forward(request, response);
+        } else {
+            vista = "vistas/users/index.jsp";
+            String fullname = request.getParameter("fullname");
+            String username = request.getParameter("username");
+            String tel = request.getParameter("tel");
+
+            cls_usuario usuario = new cls_usuario();
+            usuario.setFullname(fullname);
+            usuario.setUsername(username);
+            usuario.setPassword(password);
+            usuario.setTel(tel);
+            usuario.setIdpermiso(3);
+
+            usuarioDAO usuarioDAO = new usuarioDAO();
+            Boolean success = usuarioDAO.agregar(usuario);
+            if(success) {
+                request.setAttribute("success", "Usuario agregado correctamente");
+                List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
+                session.setAttribute("usuarios", usuarios);
+            } else {
+                request.setAttribute("error", "No se pudo agregar el usuario");
+            }
+
+            request.getRequestDispatcher(vista).forward(request, response);
+
+        }
     }
 
     /**

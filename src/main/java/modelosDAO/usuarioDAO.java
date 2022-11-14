@@ -18,7 +18,21 @@ public class usuarioDAO implements i_usuario {
 
     @Override
     public boolean agregar(cls_usuario usuario) {
-        return false;
+        String sql = "insert into usuarios(fullname, username, tel, password, idpermiso) values(?,?,?,?,?)";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            //format uft-8
+            ps.setString(1, usuario.getFullname());
+            ps.setString(2, usuario.getUsername());
+            ps.setString(3, usuario.getTel());
+            ps.setString(4, usuario.getPassword());
+            ps.setInt(5, usuario.getIdpermiso());
+            ps.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -49,6 +63,30 @@ public class usuarioDAO implements i_usuario {
             ps = con.prepareStatement(sql);
             ps.setString(1, usuario.getUsername());
             ps.setString(2, usuario.getPassword());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                cls_usuario us = new cls_usuario();
+                us.setId(rs.getInt("id"));
+                us.setFullname(rs.getString("fullname"));
+                us.setUsername(rs.getString("username"));
+                us.setPassword(rs.getString("password"));
+                us.setTel(rs.getString("tel"));
+                us.setIdpermiso(rs.getInt("idpermiso"));
+                list.add(us);
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return list;
+    }
+
+    @Override
+    public List getUsuarios() {
+        List<cls_usuario> list = new ArrayList<>();
+        String sql = "select * from usuarios where idpermiso!=1";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
                 cls_usuario us = new cls_usuario();

@@ -7,4 +7,5 @@ modelosDAO\usuarioDAO.class
 controlladores\mascotas.class
 controlladores\citas.class
 interfaces\i_usuario.class
+utils\utils.class
 modelos\cls_usuario.class
