@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-11-2022 a las 07:59:03
+-- Tiempo de generación: 15-11-2022 a las 05:41:52
 -- Versión del servidor: 10.4.21-MariaDB-log
 -- Versión de PHP: 8.0.10
 
@@ -78,7 +78,7 @@ CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `fullname` varchar(200) NOT NULL DEFAULT ' ',
   `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `tel` varchar(9) NOT NULL,
   `idpermiso` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -88,8 +88,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `fullname`, `username`, `password`, `tel`, `idpermiso`) VALUES
-(1, ' Marco Rene Esquivel Juarez', 'admin', 'adminpass', '7711-2222', 1),
-(2, ' Mery Elizabeth Acevedo Montoya', 'mery', 'merypass', '1122-3344', 2);
+(1, ' Marco Rene Esquivel Juarez', 'admin', '$2a$12$jUtILuQlOX.R4rRsZ94YZO1oDoxU/uThu3AkK0idcvyv8lT4fr.fG', '7711-2221', 1),
+(2, 'Mery Elizabeth Acevedo Montoya mod', 'mery', '$2a$12$l3FYhxDPFqcr3H4ROpPaPOS0.IBz/sntYdHQ4DettH6YMmy.b6u7W', '1122-3340', 2),
+(3, 'Mario Humberto Salazar', 'mario', '$2a$12$d/0ZXyG4cIAVqObwCEy52emFg.BeciiHKkLZUT8P7SNQH1m2AmjBi', '1122-3344', 3),
+(4, 'Oscar David Perez', 'oscar', '$2a$12$XNGv7XTlnqecU4kg.o2Vyug0xdqiNNgndxKdfCCqtnrT.KKnekiUq', '1100-3333', 3),
+(5, 'Miguel Angel Fernadez', 'miguel', '$2a$12$bmlAPU49FdRnpMTDGVn.rOe6K5S5OhmkFJ4yK..K5.WBMB4nPBOua', '1022-1111', 3);
 
 --
 -- Índices para tablas volcadas
@@ -133,7 +136,7 @@ ALTER TABLE `registros`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
