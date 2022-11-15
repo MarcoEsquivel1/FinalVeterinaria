@@ -1,6 +1,10 @@
 package utils;
 
+
+
+
 public class utils {
+
     public static String convertIdpermiso(int idpermiso){
         if(idpermiso == 1){
             return "Administrador";

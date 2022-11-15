@@ -6,6 +6,7 @@ package controlladores;
 
 import modelos.cls_usuario;
 import modelosDAO.usuarioDAO;
+import utils.encript;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Marco
  */
-@WebServlet(name = "users", urlPatterns = {"/users"})
+@WebServlet(name = "users", urlPatterns = {"/users", "/users/edit", "/users/delete", "/users/update"})
 public class users extends HttpServlet {
 
     /**
@@ -64,20 +65,32 @@ public class users extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         String vista = "";
+
         if(session.getAttribute("idpermiso")== null) {
             vista = "/";
-        } else if ((int)session.getAttribute("idpermiso") == 1) {
-            //redirect
-            usuarioDAO usuarioDAO = new usuarioDAO();
-            List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
-            session.setAttribute("usuarios", usuarios);
-            vista= "vistas/users/index.jsp";
-            request.getRequestDispatcher(vista).forward(request, response);
-        } else if ((int)session.getAttribute("idpermiso") == 2 || (int)session.getAttribute("idpermiso") == 3) {
-            vista = "/citas";
+            response.sendRedirect(request.getContextPath() + vista);
+        }else {
+            String accion = request.getServletPath();
+            if (accion.equals("/users/edit")) {
+                vista = "../vistas/users/edit.jsp";
+                int id = Integer.parseInt(request.getParameter("id"));
+                usuarioDAO usuarioDAO = new usuarioDAO();
+                cls_usuario usuario = usuarioDAO.findUsuario(id);
+                request.setAttribute("usuario", usuario);
+                request.getRequestDispatcher(vista).forward(request, response);
+            } else if ((int) session.getAttribute("idpermiso") == 1) {
+                //redirect
+                usuarioDAO usuarioDAO = new usuarioDAO();
+                List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
+                session.setAttribute("usuarios", usuarios);
+                vista = "vistas/users/index.jsp";
+                request.getRequestDispatcher(vista).forward(request, response);
+            } else if ((int) session.getAttribute("idpermiso") == 2 || (int) session.getAttribute("idpermiso") == 3) {
+                vista = "/citas";
+                response.sendRedirect(request.getContextPath() + vista);
+            }
         }
 
-        response.sendRedirect(request.getContextPath() + vista);
     }
 
     /**
@@ -91,13 +104,31 @@ public class users extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String accion = request.getServletPath();
+        if (accion.equals("/users/update")) {
+            updateUser(request, response);
+        } else {
+            createUser(request, response);
+        }
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+    public void createUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         String vista = "";
         String password = request.getParameter("password");
         String passwordconf = request.getParameter("passwordconf");
-        System.out.println(password);
-        System.out.println(passwordconf);
-        if(!password.equals(passwordconf)) {
+        if (!password.equals(passwordconf)) {
             //error
             vista = "vistas/users/index.jsp";
             request.setAttribute("error", "Las contraseñas no coinciden");
@@ -117,7 +148,7 @@ public class users extends HttpServlet {
 
             usuarioDAO usuarioDAO = new usuarioDAO();
             Boolean success = usuarioDAO.agregar(usuario);
-            if(success) {
+            if (success) {
                 request.setAttribute("success", "Usuario agregado correctamente");
                 List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
                 session.setAttribute("usuarios", usuarios);
@@ -130,14 +161,67 @@ public class users extends HttpServlet {
         }
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    public void updateUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String vista = "";
+        String id = request.getParameter("id");
+        String newpassword = request.getParameter("newpassword");
+        String adminpassword = request.getParameter("adminpassword");
+        String sessionpassword = (String) session.getAttribute("password");
+        String fullname = request.getParameter("fullname");
+        String username = request.getParameter("username");
+        String tel = request.getParameter("tel");
+        String idpermiso = request.getParameter("idpermiso");
+
+        cls_usuario usuario = new cls_usuario();
+        usuario.setId(Integer.parseInt(id));
+        usuario.setFullname(fullname);
+        usuario.setUsername(username);
+        usuario.setTel(tel);
+        usuario.setIdpermiso(Integer.parseInt(idpermiso));
+        System.out.println("usernmae: " + username);
+        usuarioDAO usuarioDAO = new usuarioDAO();
+
+        if(newpassword != ""){
+            if (adminpassword.equals("")) {
+                vista = "/users/edit?id=" + id;
+                //error
+                response.sendRedirect(vista + "&error=Ingrese el password del administrador para poder cambiar el password del usuario");
+            }else{
+                if(!encript.checkPassword(adminpassword, sessionpassword)){
+                    vista = "/users/edit?id=" + id;
+                    //error
+                    response.sendRedirect(vista + "&error=El password del administrador es incorrecto");
+                }else if(encript.checkPassword(adminpassword, sessionpassword)){
+                    String hash = encript.hashPassword(newpassword);
+                    usuario.setPassword(hash);
+                    Boolean success = usuarioDAO.actualizarUsuario(usuario);
+                    if (success) {
+
+                        vista = "/users/edit?id=" + id;
+                        //success
+                        response.sendRedirect(vista + "&success=Usuario actualizado correctamente");
+                    } else {
+                        vista = "/users/edit?id=" + id;
+                        //error
+                        response.sendRedirect(vista + "&error=No se pudo actualizar el usuario");
+                    }
+                }
+            }
+        }else {
+            cls_usuario usuario2 = usuarioDAO.findUsuario(Integer.parseInt(id));
+            usuario.setPassword(usuario2.getPassword());
+            Boolean success = usuarioDAO.actualizarUsuario(usuario);
+            if (success) {
+                vista = "/users/edit?id=" + id;
+                //success
+                response.sendRedirect(vista + "&success=Usuario actualizado correctamente");
+            } else {
+                vista = "/users/edit?id=" + id;
+                //error
+                response.sendRedirect(vista + "&error=No se pudo actualizar el usuario");
+            }
+        }
+    }
 
 }

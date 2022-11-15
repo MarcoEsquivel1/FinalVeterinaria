@@ -83,7 +83,7 @@
                                     <td>${usuario.getTel()}</td>
                                     <td>${utils.convertIdpermiso(usuario.getIdpermiso())}</td>
                                     <td class="d-flex">
-                                        <a href="" class="btn btn-primary mx-2"><i class="fa-regular fa-pen-to-square"></i></a>
+                                        <a href="/users/edit?id=${usuario.getId()}" class="btn btn-primary mx-2"><i class="fa-regular fa-pen-to-square"></i></a>
                                         <a href="" class="btn btn-danger mx-2"><i class="fa-regular fa-trash-can"></i></a>
                                     </td>
                                 </tr>

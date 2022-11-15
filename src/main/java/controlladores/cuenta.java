@@ -6,6 +6,7 @@ package controlladores;
 
 import modelos.cls_usuario;
 import modelosDAO.usuarioDAO;
+import utils.encript;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -108,15 +109,21 @@ public class cuenta extends HttpServlet {
                 request.setAttribute("error", "Para cambiar la contraseña, debe ingresar su contraseña actual");
                 request.getRequestDispatcher(vista).forward(request, response);
             }else {
-                if (!request.getParameter("password").equals(sesionpassword)) {
+                String actualpassword = request.getParameter("password");
+                if (!encript.checkPassword(actualpassword, sesionpassword)) {
                     vista = "vistas/cuenta/index.jsp";
                     request.setAttribute("error", "Ingrese su contraseña actual para poder cambiar la contraseña");
                     request.getRequestDispatcher(vista).forward(request, response);
-                } else if (request.getParameter("password").equals(sesionpassword)){
+                } else if (encript.checkPassword(actualpassword, sesionpassword)){
                     String newpassword = request.getParameter("newpassword");
-                    usuario.setPassword(newpassword);
+                    String hash = encript.hashPassword(newpassword);
+                    usuario.setPassword(hash);
                     Boolean success = usuarioDAO.actualizar(usuario);
                     if (success) {
+                        session.setAttribute("fullname", usuario.getFullname());
+                        session.setAttribute("username", usuario.getUsername());
+                        session.setAttribute("tel", usuario.getTel());
+                        session.setAttribute("password", usuario.getPassword());
                         vista = "vistas/cuenta/index.jsp";
                         request.setAttribute("success", "Se ha actualizado la contraseña");
                         request.getRequestDispatcher(vista).forward(request, response);
