@@ -150,4 +150,20 @@ public class usuarioDAO implements i_usuario {
         }
         return us;
     }
+
+    @Override
+    public boolean existAdmin() {
+        String sql = "select * from usuarios where idpermiso=1";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+        return false;
+    }
 }

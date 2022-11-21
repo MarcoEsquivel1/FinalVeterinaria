@@ -11,4 +11,6 @@ public interface i_usuario {
     public List login(cls_usuario usuario);
     public List getUsuarios();
     public cls_usuario findUsuario(int id);
+
+    public boolean existAdmin();
 }
