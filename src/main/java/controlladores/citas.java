@@ -6,12 +6,24 @@ package controlladores;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import modelos.cls_mascota;
+import modelos.cls_registro;
+import modelos.cls_usuario;
+import modelosDAO.MascotaDAO;
+import modelosDAO.RegistrosDAO;
+import modelosDAO.usuarioDAO;
+import utils.encript;
 
 /**
  *
@@ -59,7 +71,7 @@ public class citas extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String vista = "";
+        String vista = "vistas/citas";
         if(session.getAttribute("idpermiso") == null){
             vista = "/";
         } else if ((int)session.getAttribute("idpermiso") == 1) {
@@ -67,6 +79,9 @@ public class citas extends HttpServlet {
             vista = "/users";
         } else if ((int)session.getAttribute("idpermiso") == 2 || (int)session.getAttribute("idpermiso") == 3) {
             vista= "vistas/citas/index.jsp";
+             RegistrosDAO registrosdao = new RegistrosDAO();
+                List<cls_registro> mascotas = registrosdao.getRegistros();
+                session.setAttribute("mascotas", mascotas);
             request.getRequestDispatcher(vista).forward(request, response);
         }
 
@@ -81,11 +96,104 @@ public class citas extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+   @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        String accion = request.getServletPath();
+        if (accion.equals("/citas/formCitas")) {
+            updateRegistro(request, response);
+        } else {
+            createCita(request, response);
+        }
     }
+    
+     public void createCita(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String vista = "";
+        
+        String id = request.getParameter("idmascota");
+        String fecha = request.getParameter("date");
+        String sintoma = request.getParameter("sintomas");
+        System.out.println(fecha);
+        
+             vista = "vistas/citas/index.jsp";
+            
+
+            cls_registro registro = new cls_registro();
+            registro.setIdmascota(Integer.parseInt(id));
+            registro.setFecha(Date.valueOf(fecha));
+            registro.setSintomas(sintoma);
+         
+
+            RegistrosDAO registrosDAO2 = new RegistrosDAO();
+            Boolean success = registrosDAO2.agregar(registro);
+            if (success) {
+                vista= "vistas/citas/index.jsp";
+             RegistrosDAO registrosdao = new RegistrosDAO();
+                List<cls_registro> mascotas = registrosdao.getRegistros();
+                session.setAttribute("registros", mascotas);
+            request.getRequestDispatcher(vista).forward(request, response);
+            } else {
+                request.setAttribute("error", "No se pudo agregar la cita");
+            }
+
+            request.getRequestDispatcher(vista).forward(request, response);
+
+        
+    }
+     
+     public void updateRegistro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String vista = "";
+        String id = request.getParameter("id");
+        String mascota = request.getParameter("mascota");
+        String fecha = request.getParameter("fecha");
+        
+        String sintomas = request.getParameter("sintomas");
+        
+
+        cls_registro usuario = new cls_registro();
+        usuario.setId(Integer.parseInt(id));
+        usuario.setIdmascota(Integer.parseInt(mascota));
+        usuario.setFecha(Date.valueOf(fecha));
+        usuario.setSintomas(sintomas);
+        RegistrosDAO registrosDAO = new RegistrosDAO();
+
+        
+                
+                    Boolean success = registrosDAO.actualizar(usuario);
+                    if (success) {
+
+                        vista = "/citas/edit?id=" + id;
+                        //success
+                        response.sendRedirect(vista + "&success=Usuario actualizado correctamente");
+                    } else {
+                        vista = "/citas/edit?id=" + id;
+                        //error
+                        response.sendRedirect(vista + "&error=No se pudo actualizar el usuario");
+                    }
+                
+            
+       
+        
+    }
+     
+      public void delete(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException, ClassNotFoundException {
+       HttpSession session = request.getSession();
+        String vista = "/vistas/citas/index.jsp";
+        String id = request.getParameter("id");
+                RegistrosDAO mascotaDao = new RegistrosDAO();
+              
+        try {
+            mascotaDao.delete(Integer.parseInt(id));
+        } catch (SQLException ex) {
+            Logger.getLogger(mascotas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        List<cls_registro> usuarios = mascotaDao.getRegistros();
+        session.setAttribute("mascotas", usuarios);
+        request.getRequestDispatcher(vista).forward(request, response);
+     }
 
     /**
      * Returns a short description of the servlet.
