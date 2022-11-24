@@ -39,19 +39,19 @@
                                        <div class="col-12 my-3">
                                     <div class="form-floating mb-3">
                                         <input type="text" value="<%=registro.getMascota()%>" class="form-control" id="nombre" name="nombre" placeholder="#" readonly>
-                                        <label for="fullname">Nombre Mascota</label>
+                                        <label for="nombre">Nombre Mascota</label>
                                     </div>
                                 </div>
                                 <div class="col-12 my-3">
                                     <div class="form-floating mb-3">
                                         <input type="date" class="form-control" value="<%=registro.getFecha()%>" id="date" name="date" placeholder="#" required>
-                                        <label for="username">Fecha</label>
+                                        <label for="date">Fecha</label>
                                     </div>
                                 </div>
                                 <div class="col-12 my-3">
                                     <div class="form-floating mb-3">
                                         <input type="text" class="form-control" max="9" id="tel" value="<%=registro.getSintomas()%>" name="sintomas"  required placeholder="#">
-                                        <label for="tel">Sintomas</label>
+                                        <label for="sintomas">Sintomas</label>
                                     </div>
                                 </div>
                               

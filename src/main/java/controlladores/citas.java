@@ -127,7 +127,7 @@ public class citas extends HttpServlet {
             throws ServletException, IOException {
 
         String accion = request.getServletPath();
-        if (accion.equals("/citas/formCitas")) {
+        if (accion.equals("/citas/update")) {
             updateRegistro(request, response);
         }else if(accion.equals("/mascotas/delete")){
             try {
@@ -179,15 +179,15 @@ public class citas extends HttpServlet {
         HttpSession session = request.getSession();
         String vista = "";
         String id = request.getParameter("id");
-        String mascota = request.getParameter("mascota");
-        String fecha = request.getParameter("fecha");
+        String idmascota = request.getParameter("idmascota");
+        String fecha = request.getParameter("date");
         
         String sintomas = request.getParameter("sintomas");
-        
+        System.out.println(fecha);
 
         cls_registro usuario = new cls_registro();
         usuario.setId(Integer.parseInt(id));
-        usuario.setIdmascota(Integer.parseInt(mascota));
+        usuario.setIdmascota(Integer.parseInt(idmascota));
         usuario.setFecha(Date.valueOf(fecha));
         usuario.setSintomas(sintomas);
         RegistrosDAO registrosDAO = new RegistrosDAO();

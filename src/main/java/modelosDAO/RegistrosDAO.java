@@ -55,7 +55,7 @@ public class RegistrosDAO {
             ps.setString(2, usuario.getSintomas());
             ps.setDate(3, usuario.getFecha());
           
-            ps.setInt(5, usuario.getId());
+            ps.setInt(4, usuario.getId());
             ps.executeUpdate();
             return true;
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class RegistrosDAO {
    
     public cls_registro findRegistros(int id) {
       cls_registro us = new cls_registro();
-        String sql = "select * from registros where id=? limit 1";
+        String sql = "SELECT *  from registros r JOIN mascotas m on m.id = r.idmascota and r.id = ?";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -82,6 +82,8 @@ public class RegistrosDAO {
             rs.next();
             us.setId(rs.getInt("id"));
             us.setIdmascota(Integer.parseInt(rs.getString("idmascota")));
+            us.setMascota(rs.getString("nombre"));
+            us.setDuennio(rs.getString("nombreowner"));
             us.setSintomas(rs.getString("sintomas"));
             us.setFecha(Date.valueOf(rs.getString("fecha")));
             
