@@ -31,8 +31,8 @@
                                     <td>${registro.getFecha()}</td>
                                     
                                     <td class="d-flex">
-                                        <a href="/citas/edit?id=${registro.getId()}" class="btn btn-primary mx-2"><i class="fa-regular fa-pen-to-square"></i></a>
-                                        <a href="/citas/delete?id=${mascota.getId()}" class="btn btn-danger mx-2"><i class="fa-regular fa-trash-can"></i></a>
+                                        <a href="/citas/edit?id=${registro.getId()}" class="btn btn-primary mx-2 <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>"><i class="fa-regular fa-pen-to-square"></i></a>
+                                        <a href="/citas/delete?id=${mascota.getId()}" class="btn btn-danger mx-2 <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>"><i class="fa-regular fa-trash-can"></i></a>
                                     </td>
                                 </tr>
                             </c:forEach>

@@ -44,7 +44,7 @@
                                 </div>
                                 
                                 <div class="d-grid gap-2 my-3">
-                                    <button class="btn btn-primary" type="submit">Agregar</button>
+                                    <button class="btn btn-primary" type="submit" <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>>Agregar</button>
                                 </div>
                             </div>
                         </form>
@@ -72,9 +72,9 @@
                                     <td>${mascota.getNombreOwner()}</td>
                                     <td>${mascota.getTelOwner()}</td>
                                     <td class="d-flex">
-                                        <a href="/mascotas/edit?id=${mascota.getId()}" class="btn btn-primary mx-2"><i class="fa-regular fa-pen-to-square"></i></a>
-                                         <a href="/vistas/citas/formCitas?id=${mascota.getId()}" class="btn btn-primary mx-2">Agendar Cita</a>
-                                        <a href="/mascotas/delete?id=${mascota.getId()}" class="btn btn-danger mx-2"><i class="fa-regular fa-trash-can"></i></a>
+                                        <a href="/mascotas/edit?id=${mascota.getId()}" class="btn btn-primary mx-2 <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>"><i class="fa-regular fa-pen-to-square"></i></a>
+                                         <a href="/vistas/citas/formCitas?id=${mascota.getId()}" class="btn btn-primary mx-2 <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>">Agendar Cita</a>
+                                        <a href="/mascotas/delete?id=${mascota.getId()}" class="btn btn-danger mx-2 <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>"><i class="fa-regular fa-trash-can"></i></a>
                                         
 
                                     </td>

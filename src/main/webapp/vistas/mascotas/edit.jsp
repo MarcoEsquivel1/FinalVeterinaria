@@ -62,7 +62,7 @@
                                 </div>
                                 
                                         <div class="d-grid gap-2 my-2">
-                                            <button class="btn btn-primary" type="submit">Actualizar</button>
+                                            <button class="btn btn-primary" type="submit" <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>>Actualizar</button>
                                         </div>
                                     </div>
                                 </form>

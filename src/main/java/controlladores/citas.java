@@ -81,7 +81,7 @@ public class citas extends HttpServlet {
             vista= "vistas/citas/index.jsp";
              RegistrosDAO registrosdao = new RegistrosDAO();
                 List<cls_registro> mascotas = registrosdao.getRegistros();
-                session.setAttribute("mascotas", mascotas);
+                session.setAttribute("registros", mascotas);
             request.getRequestDispatcher(vista).forward(request, response);
         }
 

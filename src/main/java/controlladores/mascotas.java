@@ -120,7 +120,7 @@ public class mascotas extends HttpServlet {
         } else if (session.getAttribute("idpermiso").toString().equals("1")) {
             //redirect
             vista = "/mascotas";
-        } else if ((int)session.getAttribute("idpermiso")==2 ) {
+        } else if ((int)session.getAttribute("idpermiso")==2 || (int)session.getAttribute("idpermiso")==3) {
           
                
               MascotaDAO mascotaDao = new MascotaDAO();
