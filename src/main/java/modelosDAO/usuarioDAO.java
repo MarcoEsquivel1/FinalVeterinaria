@@ -77,6 +77,20 @@ public class usuarioDAO implements i_usuario {
     }
 
     @Override
+    public boolean eliminar(int id) {
+        String sql = "delete from usuarios where id=?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
     public List login(cls_usuario usuario) {
         ArrayList<cls_usuario> list = new ArrayList<>();
         String sql = "select * from usuarios where username=?";

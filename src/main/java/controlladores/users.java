@@ -78,6 +78,18 @@ public class users extends HttpServlet {
                 cls_usuario usuario = usuarioDAO.findUsuario(id);
                 request.setAttribute("usuario", usuario);
                 request.getRequestDispatcher(vista).forward(request, response);
+            }else if (accion.equals("/users/delete")) {
+                vista = "../vistas/users/index.jsp";
+                int id = Integer.parseInt(request.getParameter("id"));
+                usuarioDAO usuarioDAO = new usuarioDAO();
+                try {
+                    boolean eliminar = usuarioDAO.eliminar(id);
+                }catch (Exception e) {
+                    System.out.println("Error al eliminar usuario: " + e);
+                }
+                List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
+                request.setAttribute("usuarios", usuarios);
+                request.getRequestDispatcher(vista).forward(request, response);
             } else if ((int) session.getAttribute("idpermiso") == 1) {
                 //redirect
                 usuarioDAO usuarioDAO = new usuarioDAO();
@@ -108,6 +120,8 @@ public class users extends HttpServlet {
         String accion = request.getServletPath();
         if (accion.equals("/users/update")) {
             updateUser(request, response);
+        } else if(accion.equals("/users/delete")) {
+            deleteUser(request, response);
         } else {
             createUser(request, response);
         }
@@ -222,6 +236,25 @@ public class users extends HttpServlet {
                 response.sendRedirect(vista + "&error=No se pudo actualizar el usuario");
             }
         }
+    }
+
+    public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String vista = "";
+        String id = request.getParameter("id");
+
+        usuarioDAO usuarioDAO = new usuarioDAO();
+        Boolean success = usuarioDAO.eliminar(Integer.parseInt(id));
+
+        if (success) {
+            vista = "/users";request.setAttribute("success", "Usuario eliminado correctamente");
+            List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
+            session.setAttribute("usuarios", usuarios);
+        } else {
+            vista = "/users";
+        }
+
+        response.sendRedirect(vista);
     }
 
 }
