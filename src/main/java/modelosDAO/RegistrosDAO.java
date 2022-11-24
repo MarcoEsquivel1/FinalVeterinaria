@@ -94,7 +94,7 @@ public class RegistrosDAO {
     
     public List getRegistros(int idusuario) {
         List<cls_registro> list = new ArrayList<>();
-        String sql = "SELECT *  from registros r JOIN mascotas m on m.id = r.idmascota"+String.valueOf(idusuario);
+        String sql = "SELECT *  from registros r JOIN mascotas m on m.id = r.idmascota and m.idusuario = "+String.valueOf(idusuario);
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -105,8 +105,8 @@ public class RegistrosDAO {
                 us.setIdmascota(Integer.parseInt(rs.getString("idmascota")));
                 us.setSintomas(rs.getString("sintomas"));
                 us.setFecha(Date.valueOf(rs.getString("fecha")));
-                us.setMascota("nombre");
-                us.setDuennio("nombreowner");
+                us.setMascota(rs.getString("nombre"));
+                us.setDuennio(rs.getString("nombreowner"));
                 list.add(us);
             }
         } catch (Exception e) {
