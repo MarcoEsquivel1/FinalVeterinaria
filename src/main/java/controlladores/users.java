@@ -79,7 +79,7 @@ public class users extends HttpServlet {
                 request.setAttribute("usuario", usuario);
                 request.getRequestDispatcher(vista).forward(request, response);
             }else if (accion.equals("/users/delete")) {
-                vista = "../vistas/users/index.jsp";
+                vista = "/users";
                 int id = Integer.parseInt(request.getParameter("id"));
                 usuarioDAO usuarioDAO = new usuarioDAO();
                 try {
@@ -89,7 +89,7 @@ public class users extends HttpServlet {
                 }
                 List<cls_usuario> usuarios = usuarioDAO.getUsuarios();
                 request.setAttribute("usuarios", usuarios);
-                request.getRequestDispatcher(vista).forward(request, response);
+                response.sendRedirect(vista);
             } else if ((int) session.getAttribute("idpermiso") == 1) {
                 //redirect
                 usuarioDAO usuarioDAO = new usuarioDAO();
