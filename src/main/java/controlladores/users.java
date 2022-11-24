@@ -138,11 +138,11 @@ public class users extends HttpServlet {
             String fullname = request.getParameter("fullname");
             String username = request.getParameter("username");
             String tel = request.getParameter("tel");
-
+            String hashed = encript.hashPassword(password);
             cls_usuario usuario = new cls_usuario();
             usuario.setFullname(fullname);
             usuario.setUsername(username);
-            usuario.setPassword(password);
+            usuario.setPassword(hashed);
             usuario.setTel(tel);
             usuario.setIdpermiso(3);
 

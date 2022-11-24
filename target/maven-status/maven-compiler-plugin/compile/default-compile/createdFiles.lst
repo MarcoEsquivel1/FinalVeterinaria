@@ -2,10 +2,16 @@ controlladores\login.class
 controlladores\logout.class
 controlladores\mascotas.class
 interfaces\i_usuario.class
+modelos\cls_mascota.class
 modelos\cls_usuario.class
 db\Conexion.class
 controlladores\cuenta.class
 controlladores\users.class
+modelos\cls_registro.class
 modelosDAO\usuarioDAO.class
+utils\encript.class
 controlladores\citas.class
+controlladores\admin.class
+modelosDAO\MascotaDAO.class
+modelosDAO\RegistrosDAO.class
 utils\utils.class
