@@ -11,5 +11,7 @@ modelos\cls_registro.class
 modelosDAO\usuarioDAO.class
 utils\encript.class
 controlladores\citas.class
+controlladores\admin.class
+modelosDAO\MascotaDAO.class
 modelosDAO\RegistrosDAO.class
 utils\utils.class

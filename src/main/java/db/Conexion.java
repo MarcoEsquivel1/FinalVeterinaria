@@ -9,7 +9,7 @@ public class Conexion {
     public Conexion(){
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/veterinaria?useUnicode=true&connectionCollation=utf8_spanish_ci","root","");
+            con =  DriverManager.getConnection("jdbc:mysql://localhost:4001/veterinaria?useUnicode=true&connectionCollation=utf8_spanish_ci","root","");
             System.out.println("Conexion exitosa");
         }catch(Exception e){
             System.out.println("Error de conexion");

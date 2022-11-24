@@ -14,7 +14,7 @@ import java.sql.Date;
 public class cls_registro {
     int id, idmascota;
     Date fecha;
-    String Sintomas;
+    String Sintomas,duennio,mascota;
 
     public cls_registro() {
     }
@@ -26,8 +26,24 @@ public class cls_registro {
         this.Sintomas = Sintomas;
     }
 
+    public void setDuennio(String duennio) {
+        this.duennio = duennio;
+    }
+
+    public String getMascota() {
+        return mascota;
+    }
+
+    public void setMascota(String mascota) {
+        this.mascota = mascota;
+    }
+
     public int getIdmascota() {
         return idmascota;
+    }
+
+    public String getDuennio() {
+        return duennio;
     }
 
     public void setId(int id) {

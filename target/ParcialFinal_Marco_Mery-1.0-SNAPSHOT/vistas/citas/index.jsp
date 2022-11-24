@@ -13,7 +13,7 @@
                  <div class="col-12 col-lg-12  align-self-center my-3 p-4" style="height: 90%;">
                 <h1 class="display-4 fw-bold text-center"><span class="text-primary">Citas</span> </h1>
                 <div class="my-3 p-4" style="overflow-y: scroll; height: 90%;">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="example">
                         <thead>
                             <tr>
                                 <th scope="col">Mascota</th>
@@ -29,7 +29,7 @@
                                     <td>${registro.getIdmascota()}</td>
                                     <td>${registro.getSintomas()}</td>
                                     <td>${registro.getFecha()}</td>
-                                    
+                                     <td>${registro.getDuennio()}</td>
                                     <td class="d-flex">
                                         <a href="/citas/edit?id=${registro.getId()}" class="btn btn-primary mx-2 <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>"><i class="fa-regular fa-pen-to-square"></i></a>
                                         <a href="/citas/delete?id=${mascota.getId()}" class="btn btn-danger mx-2 <% if((int)session.getAttribute("idpermiso") != 3){ %> disabled <% } %>"><i class="fa-regular fa-trash-can"></i></a>
@@ -45,3 +45,27 @@
     </div>
 </body>
 </html>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js.5.1.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css"></script>
+
+<script src="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css"></script>
+<script type="application/javascript">
+    $(document).ready( function () {
+    $('#example').DataTable( {
+    paging: false,
+      dom: 'Bfrtip',
+   
+} );
+} );
+</script>

@@ -29,7 +29,7 @@ import utils.encript;
  *
  * @author Marco
  */
-@WebServlet(name = "citas", urlPatterns = {"/citas"})
+@WebServlet(name = "citas", urlPatterns = {"/citas", "/citas/edit", "/citas/delete", "/citas/update"})
 public class citas extends HttpServlet {
 
     /**
@@ -71,8 +71,34 @@ public class citas extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String vista = "vistas/citas";
-        if(session.getAttribute("idpermiso") == null){
+        String vista = "";
+          String accion = request.getServletPath();
+
+         if (accion.equals("/citas/edit")) {
+                System.out.println(accion);
+                String vista2 = "../vistas/citas/edit.jsp";
+                int id = Integer.parseInt(request.getParameter("id"));
+                RegistrosDAO mascotaDao = new RegistrosDAO();
+                cls_registro mascota = mascotaDao.findRegistros(id);
+                request.setAttribute("registro", mascota);
+                request.getRequestDispatcher(vista2).forward(request, response);
+            }else if(accion.equals("/citas/delete")){
+                    System.out.println(accion);
+                      String vista2 = "../vistas/citas/index.jsp";
+                      int id = Integer.parseInt(request.getParameter("id"));
+                      RegistrosDAO mascotaDao = new RegistrosDAO();
+                  try {
+                      boolean a = mascotaDao.delete(id);
+                  } catch (ClassNotFoundException ex) {
+                      Logger.getLogger(mascotas.class.getName()).log(Level.SEVERE, null, ex);
+                  } catch (SQLException ex) {
+                      Logger.getLogger(mascotas.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+                      List<cls_mascota> mascotas = mascotaDao.getRegistros(Integer.parseInt(session.getAttribute("id").toString()));
+                      session.setAttribute("registros", mascotas);
+                      request.getRequestDispatcher(vista2).forward(request, response);  
+            }
+            else if(session.getAttribute("idpermiso") == null){
             vista = "/";
         } else if ((int)session.getAttribute("idpermiso") == 1) {
             //redirect
@@ -80,7 +106,7 @@ public class citas extends HttpServlet {
         } else if ((int)session.getAttribute("idpermiso") == 2 || (int)session.getAttribute("idpermiso") == 3) {
             vista= "vistas/citas/index.jsp";
              RegistrosDAO registrosdao = new RegistrosDAO();
-                List<cls_registro> mascotas = registrosdao.getRegistros();
+                List<cls_registro> mascotas = registrosdao.getRegistros(Integer.parseInt(session.getAttribute("id").toString()));
                 session.setAttribute("registros", mascotas);
             request.getRequestDispatcher(vista).forward(request, response);
         }
@@ -103,7 +129,13 @@ public class citas extends HttpServlet {
         String accion = request.getServletPath();
         if (accion.equals("/citas/formCitas")) {
             updateRegistro(request, response);
-        } else {
+        }else if(accion.equals("/mascotas/delete")){
+            try {
+                delete(request,response);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(mascotas.class.getName()).log(Level.SEVERE, null, ex);
+            }}
+        else {
             createCita(request, response);
         }
     }
@@ -131,7 +163,7 @@ public class citas extends HttpServlet {
             if (success) {
                 vista= "vistas/citas/index.jsp";
              RegistrosDAO registrosdao = new RegistrosDAO();
-                List<cls_registro> mascotas = registrosdao.getRegistros();
+                List<cls_registro> mascotas = registrosdao.getRegistros(Integer.parseInt(session.getAttribute("id").toString()));
                 session.setAttribute("registros", mascotas);
             request.getRequestDispatcher(vista).forward(request, response);
             } else {
@@ -190,8 +222,8 @@ public class citas extends HttpServlet {
         } catch (SQLException ex) {
             Logger.getLogger(mascotas.class.getName()).log(Level.SEVERE, null, ex);
         }
-        List<cls_registro> usuarios = mascotaDao.getRegistros();
-        session.setAttribute("mascotas", usuarios);
+        List<cls_registro> usuarios = mascotaDao.getRegistros(Integer.parseInt(session.getAttribute("id").toString()));
+        session.setAttribute("registros", usuarios);
         request.getRequestDispatcher(vista).forward(request, response);
      }
 
